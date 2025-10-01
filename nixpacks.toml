@@ -1,11 +1,12 @@
 [phases.setup]
 nixPkgs = ['nodejs_18']
+workDir = '/app/backend'
 
 [phases.install]
-cmds = ['npm ci']
+cmds = ['cd backend && npm ci']
 
 [phases.build]
 cmds = ['echo "No build step required for backend"']
 
 [start]
-cmd = 'npm start'
+cmd = 'cd backend && npm start'
