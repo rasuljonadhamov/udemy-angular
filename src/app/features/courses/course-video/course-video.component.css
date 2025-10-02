@@ -1,0 +1,134 @@
+.video-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.video-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #007bff;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+  background-color: #f8f9fa;
+}
+
+.video-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.video-wrapper {
+  background: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+
+.video-iframe {
+  width: 100%;
+  height: 100%;
+}
+
+.video-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+.video-placeholder svg {
+  margin-bottom: 1rem;
+  opacity: 0.7;
+}
+
+.video-note {
+  font-size: 0.875rem;
+  opacity: 0.7;
+  margin-top: 1rem;
+}
+
+.video-sidebar {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  height: fit-content;
+}
+
+.curriculum {
+  margin-top: 1rem;
+}
+
+.module {
+  margin-bottom: 1.5rem;
+}
+
+.module h3 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.lessons {
+  list-style: none;
+  padding: 0;
+}
+
+.lesson {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.lesson:last-child {
+  border-bottom: none;
+}
+
+.lesson svg {
+  color: #007bff;
+}
+
+.lesson span:first-of-type {
+  flex: 1;
+}
+
+.duration {
+  font-size: 0.875rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .video-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .video-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

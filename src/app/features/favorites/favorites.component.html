@@ -1,0 +1,32 @@
+<div class="favorites-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>My Favorites</h1>
+      <p>Courses you've saved for later</p>
+    </div>
+
+    @if (isLoading) {
+    <div class="loading">
+      <div class="spinner-large"></div>
+      <p>Loading favorites...</p>
+    </div>
+    } @else if (favoriteCourses().length === 0) {
+    <div class="empty-state">
+      <svg width="80" height="80" viewBox="0 0 20 20" fill="currentColor">
+        <path
+          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+        />
+      </svg>
+      <h3>No favorites yet</h3>
+      <p>Start adding courses to your favorites!</p>
+      <a routerLink="/courses" class="btn btn-primary">Browse Courses</a>
+    </div>
+    } @else {
+    <div class="courses-grid">
+      @for (course of favoriteCourses(); track (course._id || course.id)) {
+      <app-course-card [course]="course" />
+      }
+    </div>
+    }
+  </div>
+</div>

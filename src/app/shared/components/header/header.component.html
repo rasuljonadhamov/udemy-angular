@@ -1,0 +1,92 @@
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <a routerLink="/courses" class="logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <rect width="32" height="32" rx="8" fill="url(#gradient)" />
+          <path d="M16 8L22 12V20L16 24L10 20V12L16 8Z" fill="white" />
+          <defs>
+            <linearGradient id="gradient" x1="0" y1="0" x2="32" y2="32">
+              <stop offset="0%" stop-color="#667eea" />
+              <stop offset="100%" stop-color="#764ba2" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="logo-text">LearnHub</span>
+      </a>
+
+      <nav class="nav">
+        <a routerLink="/courses" routerLinkActive="active" class="nav-link"
+          >Courses</a
+        >
+
+        @if (authStore.isAuthenticated()) {
+        <a routerLink="/my-learning" routerLinkActive="active" class="nav-link">
+          My Learning @if (authStore.purchasedCoursesCount() > 0) {
+          <span class="badge">{{ authStore.purchasedCoursesCount() }}</span>
+          }
+        </a>
+
+        <a routerLink="/favorites" routerLinkActive="active" class="nav-link">
+          Favorites @if (favoritesStore.count() > 0) {
+          <span class="badge">{{ favoritesStore.count() }}</span>
+          }
+        </a>
+
+        <a routerLink="/cart" routerLinkActive="active" class="nav-link">
+          Cart @if (cartStore.count() > 0) {
+          <span class="badge">{{ cartStore.count() }}</span>
+          }
+        </a>
+        }
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" (click)="toggleTheme()" title="Toggle theme">
+          @if (themeStore.isDarkMode()) {
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+            />
+          </svg>
+          } @else {
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"
+            />
+          </svg>
+          }
+        </button>
+
+        @if (authStore.isAuthenticated()) {
+        <div class="user-menu">
+          <button class="user-btn">
+            <div class="avatar">
+              {{ authStore.user()?.name?.charAt(0)?.toUpperCase() }}
+            </div>
+            <span class="user-name">{{ authStore.user()?.name }}</span>
+          </button>
+          <div class="dropdown">
+            <button class="dropdown-item" (click)="logout()">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 16 16"
+                fill="currentColor"
+              >
+                <path
+                  d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                />
+              </svg>
+              Logout
+            </button>
+          </div>
+        </div>
+        } @else {
+        <a routerLink="/login" class="btn btn-secondary">Login</a>
+        <a routerLink="/register" class="btn btn-primary">Sign Up</a>
+        }
+      </div>
+    </div>
+  </div>
+</header>

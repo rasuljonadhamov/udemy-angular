@@ -1,0 +1,75 @@
+<div class="course-card" [routerLink]="['/courses', course()._id]">
+  <div class="card-image">
+    <img [src]="course().thumbnail" [alt]="course().title" />
+    @if (showActions() && authStore.isAuthenticated()) {
+    <button
+      class="favorite-btn"
+      [class.active]="isFavorite"
+      (click)="onFavoriteClick($event)"
+      title="Add to favorites"
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 20 20"
+        [attr.fill]="isFavorite ? 'currentColor' : 'none'"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+        />
+      </svg>
+    </button>
+    } @if (isPurchased) {
+    <div class="purchased-badge">Purchased</div>
+    }
+  </div>
+
+  <div class="card-content">
+    <div class="card-header">
+      <h3 class="course-title">{{ course().title }}</h3>
+      <p class="course-author">{{ course().author }}</p>
+    </div>
+
+    <p class="course-description">{{ course().description }}</p>
+
+    <div class="card-meta">
+      <div class="rating">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path
+            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+          />
+        </svg>
+        <span>{{ course().rating }}</span>
+      </div>
+
+      <div class="students">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+          <path
+            d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"
+          />
+        </svg>
+        <span>{{ course().studentsCount }} students</span>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <div class="price">
+        <span class="currency">$</span>
+        <span class="amount">{{ course().price }}</span>
+      </div>
+
+      @if (showActions() && authStore.isAuthenticated() && !isPurchased) {
+      <button
+        class="btn btn-primary cart-btn"
+        [class.in-cart]="isInCart"
+        (click)="onAddToCart($event)"
+        [disabled]="isInCart"
+      >
+        @if (isInCart) { In Cart } @else { Add to Cart }
+      </button>
+      }
+    </div>
+  </div>
+</div>
