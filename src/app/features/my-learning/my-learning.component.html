@@ -1,0 +1,30 @@
+<div class="my-learning-container">
+  <div class="container">
+    <div class="page-header">
+      <h1>My Learning</h1>
+      <p>Your purchased courses</p>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading">
+        <div class="spinner-large"></div>
+        <p>Loading your courses...</p>
+      </div>
+    } @else if (courses().length === 0) {
+      <div class="empty-state">
+        <svg width="80" height="80" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" />
+        </svg>
+        <h3>No purchases yet</h3>
+        <p>Browse courses and start your learning journey.</p>
+        <a routerLink="/courses" class="btn btn-primary">Browse Courses</a>
+      </div>
+    } @else {
+      <div class="courses-grid">
+        @for (course of courses(); track (course._id || course.id)) {
+          <app-course-card [course]="course" [showActions]="true" />
+        }
+      </div>
+    }
+  </div>
+</div>

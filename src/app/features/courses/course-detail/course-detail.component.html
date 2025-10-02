@@ -1,0 +1,158 @@
+<div class="course-detail-container">
+  @if (isLoading()) {
+  <div class="loading">
+    <div class="spinner-large"></div>
+    <p>Loading course details...</p>
+  </div>
+  } @else if (course()) {
+  <div class="course-hero">
+    <div class="container">
+      <div class="course-content">
+        @if (course()?.curriculum?.length) {
+        <section class="curriculum-section">
+          <h2>Course Curriculum</h2>
+          <div class="curriculum">
+            @for (module of course()?.curriculum || []; track module.id || $index) {
+            <div class="module">
+              <h3>{{ module.title }}</h3>
+              <ul class="lessons">
+                @for (lesson of module.lessons; track lesson.id || $index) {
+                <li class="lesson">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <span>{{ lesson.title }}</span>
+                  <span class="duration">{{ lesson.duration }}</span>
+                  @if (lesson.isPreview) {
+                  <span class="preview-badge">Preview</span>
+                  }
+                </li>
+                }
+              </ul>
+            </div>
+            }
+          </div>
+        </section>
+        }
+
+        <section class="reviews-section">
+          <h2>Student Reviews</h2>
+
+          @if (authStore.isAuthenticated() && isPurchased) {
+          <div class="review-form">
+            <h3>Leave a Review</h3>
+            <form [formGroup]="reviewForm" (ngSubmit)="submitReview()">
+              <div class="form-group">
+                <label>Rating</label>
+                <div class="rating-input">
+                  @for (star of [1,2,3,4,5]; track star) {
+                  <button
+                    type="button"
+                    class="star-btn"
+                    [class.active]="(reviewForm.get('rating')?.value || 0) >= star"
+                    (click)="reviewForm.patchValue({ rating: star })"
+                  >
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 20 20"
+                      [attr.fill]="
+                        (reviewForm.get('rating')?.value || 0) >= star
+                          ? 'currentColor'
+                          : 'none'
+                      "
+                      stroke="currentColor"
+                      stroke-width="1"
+                    >
+                      <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                      />
+                    </svg>
+                  </button>
+                  }
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="comment">Your Review</label>
+                <textarea
+                  id="comment"
+                  formControlName="comment"
+                  rows="4"
+                  placeholder="Share your experience with this course..."
+                ></textarea>
+                @if (reviewForm.get('comment')?.invalid &&
+                reviewForm.get('comment')?.touched) {
+                <span class="error-text"
+                  >Review must be at least 10 characters</span
+                >
+                }
+              </div>
+
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="reviewForm.invalid || isSubmittingReview()"
+              >
+                @if (isSubmittingReview()) {
+                <span class="spinner"></span> Submitting... } @else { Submit
+                Review }
+              </button>
+            </form>
+          </div>
+          }
+
+          <div class="reviews-list">
+            @if (reviews().length === 0) {
+            <p class="no-reviews">
+              No reviews yet. Be the first to review this course!
+            </p>
+            } @else { @for (review of reviews(); track review.id || $index) {
+            <div class="review-item">
+              <div class="review-header">
+                <div class="reviewer-info">
+                  <div class="avatar">
+                    {{ review.userName.charAt(0).toUpperCase() }}
+                  </div>
+                  <div>
+                    <h4>{{ review.userName }}</h4>
+                    <div class="review-rating">
+                      @for (filled of getRatingStars(review.rating); track
+                      $index) {
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 20 20"
+                        [attr.fill]="filled ? 'currentColor' : 'none'"
+                        stroke="currentColor"
+                        stroke-width="1"
+                      >
+                        <path
+                          d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                        />
+                      </svg>
+                      }
+                    </div>
+                  </div>
+                </div>
+                <span class="review-date">{{ review.createdAt | date }}</span>
+              </div>
+              <p class="review-comment">{{ review.comment }}</p>
+            </div>
+            } }
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+  }
+</div>
