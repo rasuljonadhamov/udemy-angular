@@ -40,6 +40,23 @@ exports.getCourseReviews = async (req, res) => {
   }
 };
 
+exports.getPurchasedCourses = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const courseIds = user.purchasedCourses || [];
+    const courses = await Course.find({ _id: { $in: courseIds } }).sort({ createdAt: -1 });
+    res.json(courses);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching purchased courses", error: error.message });
+  }
+};
+
 exports.purchaseCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
