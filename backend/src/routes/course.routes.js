@@ -4,6 +4,7 @@ const courseController = require("../controllers/course.controller");
 const authMiddleware = require("../middleware/auth.middleware");
 
 router.get("/", courseController.getAllCourses);
+router.get("/purchased", authMiddleware, courseController.getPurchasedCourses);
 router.get("/:id", courseController.getCourseById);
 router.get("/:id/reviews", courseController.getCourseReviews);
 router.post("/:id/purchase", authMiddleware, courseController.purchaseCourse);

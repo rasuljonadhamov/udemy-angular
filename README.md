@@ -1,59 +1,194 @@
-# UdemyAngular
+# Udemy Angular - Complete Learning Platform
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.
+A comprehensive Angular application built with modern practices, featuring a complete e-learning platform with courses, authentication, shopping cart, and more.
 
-## Development server
+## 🚀 Features
 
-To start a local development server, run:
+- **Authentication System**: Login/Register with JWT tokens
+- **Course Management**: Browse, search, filter, and purchase courses
+- **Shopping Cart**: Add courses to cart and checkout
+- **Favorites**: Save favorite courses
+- **Video Player**: Watch purchased courses
+- **Reviews & Ratings**: Rate and review courses
+- **Responsive Design**: Mobile-first approach
+- **Real-time Notifications**: Toast notifications for user feedback
 
+## 🏗️ Architecture
+
+### Core Features
+- **Signal Stores**: State management using @ngrx/signals
+- **Interceptors**: HTTP request/response handling
+- **Guards**: Route protection (Auth, Guest, Purchase)
+- **Services**: Business logic and API communication
+- **Models**: TypeScript interfaces for type safety
+
+### Shared Components
+- **Pipes**: Currency, Duration, Time Ago, Search Filter, etc.
+- **Directives**: Auto Focus, Click Outside, Debounce Click, etc.
+- **Validators**: Custom form validation
+- **Utilities**: Helper functions for common operations
+
+## 📁 Project Structure
+
+```
+src/app/
+├── core/                    # Core functionality
+│   ├── constants/          # Application constants
+│   ├── guards/             # Route guards
+│   ├── interceptors/       # HTTP interceptors
+│   ├── models/             # TypeScript interfaces
+│   ├── services/           # Business services
+│   └── utils/              # Utility functions
+├── features/               # Feature modules
+│   ├── auth/               # Authentication
+│   ├── courses/            # Course management
+│   ├── cart/               # Shopping cart
+│   └── favorites/          # Favorite courses
+├── shared/                 # Shared components
+│   ├── components/         # Reusable components
+│   ├── directives/         # Custom directives
+│   ├── pipes/              # Custom pipes
+│   ├── utils/              # Shared utilities
+│   └── validators/         # Form validators
+├── store/                  # Signal stores
+└── styles/                 # Global styles
+```
+
+## 🛠️ Technologies Used
+
+- **Angular 18+**: Latest Angular with standalone components
+- **@ngrx/signals**: Modern state management
+- **RxJS**: Reactive programming
+- **TypeScript**: Type-safe development
+- **CSS Grid/Flexbox**: Modern layouts
+- **Angular Forms**: Reactive forms with validation
+
+## 🔧 Development Setup
+
+### Prerequisites
+- Node.js (v18+)
+- npm or yarn
+- Angular CLI
+
+### Installation
+
+1. Clone the repository
+```bash
+git clone <repository-url>
+cd udemy-angular
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Start the development server
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+4. Start the backend server (if available)
 ```bash
-ng generate component component-name
+cd backend
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Available Scripts
 
 ```bash
-ng generate --help
+ng serve          # Start development server
+ng build          # Build for production
+ng test           # Run unit tests
+ng lint           # Run linting
+ng e2e            # Run e2e tests
 ```
 
-## Building
+## 🎯 Key Components
 
-To build the project run:
+### Authentication
+- Login/Register forms with validation
+- JWT token management
+- Route protection with guards
+- Persistent login state
+
+### Course Management
+- Course listing with search and filters
+- Course details with reviews
+- Video player for purchased courses
+- Rating and review system
+
+### Shopping Experience
+- Add courses to cart
+- Secure checkout process
+- Purchase history
+- Favorites management
+
+### State Management
+- **AuthStore**: User authentication state
+- **CoursesStore**: Course data and filters
+- **CartStore**: Shopping cart items
+- **FavoritesStore**: User favorites
+- **ThemeStore**: UI theme preferences
+
+## 🔒 Security Features
+
+- JWT token authentication
+- Route guards for protected pages
+- Input validation and sanitization
+- XSS protection
+- CSRF protection
+
+## 📱 Responsive Design
+
+- Mobile-first approach
+- Flexible grid layouts
+- Touch-friendly interfaces
+- Optimized for all screen sizes
+
+## 🚀 Performance Optimizations
+
+- Lazy loading routes
+- OnPush change detection
+- Optimized bundle sizes
+- Image lazy loading
+- Caching strategies
+
+## 🧪 Testing
 
 ```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
+# Unit tests
 ng test
+
+# E2E tests
+ng e2e
+
+# Coverage report
+ng test --code-coverage
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## 📦 Building for Production
 
 ```bash
-ng e2e
+ng build --configuration production
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 🤝 Contributing
 
-## Additional Resources
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if needed
+5. Submit a pull request
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🔗 Additional Resources
+
+- [Angular Documentation](https://angular.dev)
+- [NgRx Signals](https://ngrx.io/guide/signals)
+- [RxJS Documentation](https://rxjs.dev)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs)

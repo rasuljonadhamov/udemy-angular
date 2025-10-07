@@ -1,10 +1,24 @@
 const Review = require("../models/review.model");
 const Course = require("../models/course.model");
+const User = require("../models/user.model");
 
 exports.addReview = async (req, res) => {
   try {
     const { courseId, rating, comment, userName } = req.body;
     const userId = req.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const hasPurchased = (user.purchasedCourses || []).some(
+      (cId) => cId.toString() === courseId
+    );
+    if (!hasPurchased) {
+      return res
+        .status(403)
+        .json({ message: "You must purchase this course before leaving a review" });
+    }
 
     const existingReview = await Review.findOne({ courseId, userId });
     if (existingReview) {
