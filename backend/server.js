@@ -23,13 +23,17 @@ app.use(
 app.use(express.json());
 
 // mongodb connection
+const mongoUri = process.env.MONGODB_URI || "mongodb+srv://rasuljonadxamov1212_db_user:m07TpLIJa2GrW9t0@cluster0.n5aawan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+console.log('Connecting to MongoDB...');
 mongoose
-  .connect(
-    process.env.MONGODB_URI ||
-      "mongodb+srv://rasuljonadxamov1212_db_user:m07TpLIJa2GrW9t0@cluster0.n5aawan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-  )
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+  .connect(mongoUri)
+  .then(() => {
+    console.log("MongoDB connected successfully");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
 
 // routes
 app.use("/api/auth", authRoutes);
@@ -42,6 +46,6 @@ app.get("/api/health", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -4,9 +4,12 @@ const User = require("../models/user.model");
 
 exports.getAllCourses = async (req, res) => {
   try {
+    console.log('Fetching courses...');
     const courses = await Course.find().sort({ createdAt: -1 });
+    console.log('Found courses:', courses.length);
     res.json(courses);
   } catch (error) {
+    console.error('Error in getAllCourses:', error);
     res
       .status(500)
       .json({ message: "Error fetching courses", error: error.message });
