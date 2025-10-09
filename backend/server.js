@@ -10,7 +10,7 @@ const app = express();
 
 // middlwares
 app.use(cors({
-  origin: ['http://localhost:4200', 'https://udemy-angular.vercel.app'],
+  origin: ['http://localhost:4200', 'https://udemy-angular-khaki.vercel.app/'],
   credentials: true
 }));
 app.use(express.json());
