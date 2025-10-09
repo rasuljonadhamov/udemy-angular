@@ -189,7 +189,8 @@ const sampleCourses = [
 async function seedDatabase() {
   try {
     await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost:27017/online-courses",
+      process.env.MONGODB_URI ||
+        "mongodb+srv://rasuljonadxamov1212_db_user:m07TpLIJa2GrW9t0@cluster0.n5aawan.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0",
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
