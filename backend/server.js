@@ -9,17 +9,16 @@ const courseRoutes = require("./src/routes/course.routes");
 const app = express();
 
 // middlwares
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:4200', 'https://udemy-angular.vercel.app'],
+  credentials: true
+}));
 app.use(express.json());
 
 // mongodb connection
 mongoose
   .connect(
-    process.env.MONGODB_URI || "mongodb://localhost:27017/online-courses",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
+    process.env.MONGODB_URI || "mongodb://localhost:27017/online-courses"
   )
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
