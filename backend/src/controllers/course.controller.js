@@ -4,12 +4,16 @@ const User = require("../models/user.model");
 
 exports.getAllCourses = async (req, res) => {
   try {
-    console.log('Fetching courses...');
+    console.log("Fetching courses...");
     const courses = await Course.find().sort({ createdAt: -1 });
-    console.log('Found courses:', courses.length);
+    console.log("Found courses:", courses.length);
+    console.log(
+      "Course IDs:",
+      courses.map((c) => c._id.toString())
+    );
     res.json(courses);
   } catch (error) {
-    console.error('Error in getAllCourses:', error);
+    console.error("Error in getAllCourses:", error);
     res
       .status(500)
       .json({ message: "Error fetching courses", error: error.message });
@@ -46,17 +50,62 @@ exports.getCourseReviews = async (req, res) => {
 exports.getPurchasedCourses = async (req, res) => {
   try {
     const userId = req.userId;
+    console.log("Getting purchased courses for userId:", userId);
+
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
     const courseIds = user.purchasedCourses || [];
-    const courses = await Course.find({ _id: { $in: courseIds } }).sort({ createdAt: -1 });
+    console.log("User purchased course IDs:", courseIds);
+
+    const allCourses = await Course.find({});
+    console.log("Total courses in database:", allCourses.length);
+    console.log(
+      "All course IDs in database:",
+      allCourses.map((c) => c._id.toString())
+    );
+
+    const mongoose = require("mongoose");
+    const objectIds = courseIds
+      .map((id) => {
+        try {
+          return new mongoose.Types.ObjectId(id);
+        } catch (error) {
+          console.log("Invalid ObjectId:", id);
+          return null;
+        }
+      })
+      .filter((id) => id !== null);
+
+    console.log("Converted ObjectIds:", objectIds);
+
+    let courses = await Course.find({ _id: { $in: objectIds } }).sort({
+      createdAt: -1,
+    });
+    console.log("Found courses with ObjectId query:", courses.length);
+
+    if (courses.length === 0 && courseIds.length > 0) {
+      console.log("Trying fallback query with string IDs...");
+      courses = await Course.find({ _id: { $in: courseIds } }).sort({
+        createdAt: -1,
+      });
+      console.log("Found courses with string ID query:", courses.length);
+    }
+
+    console.log(
+      "Final found course details:",
+      courses.map((c) => ({ id: c._id.toString(), title: c.title }))
+    );
+
     res.json(courses);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching purchased courses", error: error.message });
+    console.error("Error in getPurchasedCourses:", error);
+    res.status(500).json({
+      message: "Error fetching purchased courses",
+      error: error.message,
+    });
   }
 };
 
