@@ -75,7 +75,7 @@ export class CartComponent {
           `Successfully purchased ${items.length} course(s)! You can now access your courses.`
         );
         this.isCheckingOut.set(false);
-        this.router.navigate(['/my-learning']);
+        this.router.navigate(['/courses']);
       },
       error: (error) => {
         console.error('Error during checkout:', error);
