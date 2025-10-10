@@ -72,8 +72,9 @@ export class CartComponent {
         this.authStore.addPurchasedCourses(courseIds);
         this.cartStore.clearCart();
         this.notificationService.showSuccess(
-          `Sucesfully purchased ${items.length} course(s)! You can now access your course.`
+          `Successfully purchased ${items.length} course(s)! You can now access your courses.`
         );
+        this.isCheckingOut.set(false);
         this.router.navigate(['/my-learning']);
       },
       error: (error) => {
@@ -81,8 +82,6 @@ export class CartComponent {
         this.notificationService.showError(
           'Purchase failed. Please try again.'
         );
-      },
-      complete: () => {
         this.isCheckingOut.set(false);
       },
     });

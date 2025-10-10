@@ -152,6 +152,7 @@ export class CourseDetailComponent implements OnInit {
         this.authStore.addPurchasedCourse(id);
         this.cartStore.removeFromCart(id);
         this.notificationService.showSuccess('Course purchased successfully!');
+        this.isPurchasing.set(false);
         this.router.navigate(['/courses', id, 'watch']);
       },
       error: (error) => {
@@ -186,9 +187,7 @@ export class CourseDetailComponent implements OnInit {
         next: (newReview) => {
           this.reviews.set([newReview, ...this.reviews()]);
           this.reviewForm.reset({ rating: 5, comment: '' });
-          this.notificationService.showSuccess(
-            'Review submited sucessfully!'
-          );
+          this.notificationService.showSuccess('Review submited sucessfully!');
           this.isSubmittingReview.set(false);
         },
         error: (error) => {
