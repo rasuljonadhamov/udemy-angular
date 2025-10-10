@@ -31,23 +31,37 @@
               <h3>{{ module.title }}</h3>
               <ul class="lessons">
                 @for (lesson of module.lessons; track lesson.id || $index) {
-                <li class="lesson">
+                <li
+                  class="lesson"
+                  [class.accessible]="isLessonAccessible(lesson)"
+                  [class.locked]="!isLessonAccessible(lesson)"
+                >
                   <svg
                     width="20"
                     height="20"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
+                    @if (isLessonAccessible(lesson)) {
                     <path
                       fill-rule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
                       clip-rule="evenodd"
                     />
+                    } @else {
+                    <path
+                      fill-rule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      clip-rule="evenodd"
+                    />
+                    }
                   </svg>
                   <span>{{ lesson.title }}</span>
                   <span class="duration">{{ lesson.duration }}</span>
                   @if (lesson.isPreview) {
                   <span class="preview-badge">Preview</span>
+                  } @else if (!isLessonAccessible(lesson)) {
+                  <span class="locked-badge">Locked</span>
                   }
                 </li>
                 }
@@ -58,7 +72,10 @@
         </section>
         }
 
-        <section class="reviews-section">
+        <section
+          class="reviews-section"
+          [class.dark-mode]="themeStore.isDarkMode()"
+        >
           <h2>Student Reviews</h2>
 
           @if (authStore.isAuthenticated() && isPurchased) {
