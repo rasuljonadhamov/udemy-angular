@@ -32,7 +32,7 @@ export const CartStore = signalStore(
       const total = store.items().reduce((sum, item) => sum + item.price, 0);
       const count = store.items().length;
       if (count >= 3) {
-        return total * 0.9; 
+        return total * 0.9;
       }
       return total;
     }),
@@ -65,7 +65,7 @@ export const CartStore = signalStore(
       const total = items.reduce((sum, item) => sum + item.price, 0);
       const count = items.length;
       if (count >= 3) {
-        return total * 0.1; 
+        return total * 0.1;
       }
       return 0;
     }),
@@ -79,7 +79,7 @@ export const CartStore = signalStore(
           items: updated,
           lastModified: Date.now(),
         });
-        storage.setItem('cart', updated);
+        storage.setItem('cart', updated, true);
       }
     },
 
@@ -89,7 +89,7 @@ export const CartStore = signalStore(
         items: updated,
         lastModified: Date.now(),
       });
-      storage.setItem('cart', updated);
+      storage.setItem('cart', updated, true);
     },
 
     addMultipleCourses(courses: Course[]) {
@@ -102,7 +102,7 @@ export const CartStore = signalStore(
         items: updated,
         lastModified: Date.now(),
       });
-      storage.setItem('cart', updated);
+      storage.setItem('cart', updated, true);
     },
 
     clearCart() {
@@ -110,7 +110,7 @@ export const CartStore = signalStore(
         items: [],
         lastModified: Date.now(),
       });
-      storage.removeItem('cart');
+      storage.removeItem('cart', true);
     },
 
     updateCourse(courseId: string, updates: Partial<Course>) {
@@ -122,13 +122,20 @@ export const CartStore = signalStore(
         items: updated,
         lastModified: Date.now(),
       });
-      storage.setItem('cart', updated);
+      storage.setItem('cart', updated, true);
     },
     loadFromStorage() {
-      const items = storage.getItem<Course[]>('cart');
+      const items = storage.getItem<Course[]>('cart', true);
       if (items) {
         patchState(store, { items });
       }
+    },
+
+    reloadUserData() {
+      console.log('reloadUserData');
+      
+      patchState(store, { items: [] });
+      this.loadFromStorage();
     },
 
     getCartSummary() {
@@ -147,6 +154,48 @@ export const CartStore = signalStore(
 
     getCourse(courseId: string): Course | undefined {
       return store.items().find((item) => item.id === courseId);
+    },
+
+    purchaseAllCourses(
+      authStore: any,
+      courseService: any,
+      notificationService: any,
+      router: any
+    ) {
+      const items = store.items();
+      if (items.length === 0) {
+        notificationService.showError('Cart is empty');
+        return;
+      }
+
+      const courseIds = items.map((item) => item.id).filter(Boolean);
+      if (courseIds.length === 0) {
+        notificationService.showError('No valid courses to purchase');
+        return;
+      }
+
+      console.log('purchaseAllCourses');
+      
+      authStore.addPurchasedCourses(courseIds);
+
+      this.clearCart();
+
+      notificationService.showSuccess(
+        `Sucesfully purchased ${courseIds.length} course(s)!`
+      );
+      router.navigate(['/my-learning']);
+    },
+
+    removePurchasedCourses(purchasedCourseIds: string[]) {
+      const items = store.items();
+      const updated = items.filter(
+        (item) => !purchasedCourseIds.includes(item.id || '')
+      );
+      patchState(store, {
+        items: updated,
+        lastModified: Date.now(),
+      });
+      storage.setItem('cart', updated, true);
     },
   })),
   withHooks({

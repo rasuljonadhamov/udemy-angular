@@ -4,6 +4,7 @@ const lessonSchema = new mongoose.Schema({
   title: String,
   duration: String,
   isPreview: Boolean,
+  videoUrl: String,
 });
 
 const moduleSchema = new mongoose.Schema({

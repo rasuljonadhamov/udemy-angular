@@ -9,11 +9,12 @@ import { FavoritesStore } from '../../../store/favorites.store';
 import { CartStore } from '../../../store/cart.store';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CustomValidators } from '../../../shared/validators/custom-validators';
+import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
 
 @Component({
   selector: 'app-course-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, SafeUrlPipe],
   templateUrl: './course-detail.component.html',
   styleUrl: './course-detail.component.css',
 })
@@ -86,28 +87,78 @@ export class CourseDetailComponent implements OnInit {
   }
 
   addToCart() {
-    if (this.course() && this.authStore.isAuthenticated()) {
-      this.cartStore.addToCart(this.course()!);
-      this.notificationService.showSuccess('Course added to cart');
+    if (!this.course()) {
+      this.notificationService.showError('Course not found');
+      return;
     }
+
+    if (!this.authStore.isAuthenticated()) {
+      this.notificationService.showError('Please login to add courses to cart');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const courseId = this.getCourseId();
+    if (!courseId) {
+      this.notificationService.showError('Invalid course');
+      return;
+    }
+
+    if (this.isPurchased) {
+      this.notificationService.showError(
+        'You have already purchased this course'
+      );
+      return;
+    }
+
+    if (this.isInCart) {
+      this.notificationService.showError('Course is already in your cart');
+      return;
+    }
+
+    this.cartStore.addToCart(this.course()!);
+    this.notificationService.showSuccess('Course added to cart successfully!');
   }
 
   purchaseCourse() {
-    if (!this.course() || !this.authStore.isAuthenticated()) return;
+    if (!this.course()) {
+      this.notificationService.showError('Course not found');
+      return;
+    }
+
+    if (!this.authStore.isAuthenticated()) {
+      this.notificationService.showError('Please login to purchase courses');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const id = this.getCourseId();
+    if (!id) {
+      this.notificationService.showError('Invalid course');
+      return;
+    }
+
+    if (this.isPurchased) {
+      this.notificationService.showError(
+        'You have already purchased this course'
+      );
+      this.router.navigate(['/courses', id, 'watch']);
+      return;
+    }
 
     this.isPurchasing.set(true);
-    const id = this.getCourseId();
-    if (!id) return;
     this.courseService.purchaseCourse(id).subscribe({
       next: () => {
         this.authStore.addPurchasedCourse(id);
         this.cartStore.removeFromCart(id);
         this.notificationService.showSuccess('Course purchased successfully!');
-        this.router.navigate(['/courses', this.course()!.id, 'watch']);
+        this.router.navigate(['/courses', id, 'watch']);
       },
       error: (error) => {
         console.error('Error purchasing course:', error);
-        this.notificationService.showError('Purchase failed. Please try again.');
+        this.notificationService.showError(
+          'Purchase failed. Please try again.'
+        );
         this.isPurchasing.set(false);
       },
     });
@@ -135,12 +186,16 @@ export class CourseDetailComponent implements OnInit {
         next: (newReview) => {
           this.reviews.set([newReview, ...this.reviews()]);
           this.reviewForm.reset({ rating: 5, comment: '' });
-          this.notificationService.showSuccess('Review submitted successfully!');
+          this.notificationService.showSuccess(
+            'Review submited sucessfully!'
+          );
           this.isSubmittingReview.set(false);
         },
         error: (error) => {
           console.error('Error submitting review:', error);
-          this.notificationService.showError('Failed to submit review. Please try again.');
+          this.notificationService.showError(
+            'Failed to submit review. Please try again.'
+          );
           this.isSubmittingReview.set(false);
         },
       });
@@ -159,7 +214,9 @@ export class CourseDetailComponent implements OnInit {
 
   get isPurchased() {
     const id = this.getCourseId();
-    return id ? (this.authStore.user()?.purchasedCourses?.includes(id) || false) : false;
+    return id
+      ? this.authStore.user()?.purchasedCourses?.includes(id) || false
+      : false;
   }
 
   private getCourseId(): string {

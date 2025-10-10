@@ -12,7 +12,7 @@ import { forkJoin } from 'rxjs';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css'
+  styleUrl: './cart.component.css',
 })
 export class CartComponent {
   cartStore = inject(CartStore);
@@ -35,31 +35,56 @@ export class CartComponent {
   }
 
   checkout() {
+    if (!this.authStore.isAuthenticated()) {
+      this.notificationService.showError('Please login to checkout');
+      this.router.navigate(['/login']);
+      return;
+    }
+
     const items = this.cartStore.items();
-    if (items.length === 0) return;
+    if (items.length === 0) {
+      this.notificationService.showError('Your cart is empty');
+      return;
+    }
+
+    const purchasedCourseIds = this.authStore.user()?.purchasedCourses || [];
+    const alreadyPurchased = items.filter((course) =>
+      purchasedCourseIds.includes(this.getCourseId(course))
+    );
+
+    if (alreadyPurchased.length > 0) {
+      this.notificationService.showError(
+        `You have already purchased ${alreadyPurchased.length} course(s). They will be removed from cart.`
+      );
+      this.cartStore.removePurchasedCourses(purchasedCourseIds);
+      return;
+    }
 
     this.isCheckingOut.set(true);
-    
-    const purchaseRequests = items.map(course => 
+
+    const purchaseRequests = items.map((course) =>
       this.courseService.purchaseCourse(this.getCourseId(course))
     );
 
     forkJoin(purchaseRequests).subscribe({
       next: () => {
-        items.forEach(course => {
-          this.authStore.addPurchasedCourse(this.getCourseId(course));
-        });
+        const courseIds = items.map((course) => this.getCourseId(course));
+        this.authStore.addPurchasedCourses(courseIds);
         this.cartStore.clearCart();
-        this.notificationService.showSuccess('Purchase successful! You can now access your courses.');
-        this.router.navigate(['/courses']);
+        this.notificationService.showSuccess(
+          `Sucesfully purchased ${items.length} course(s)! You can now access your course.`
+        );
+        this.router.navigate(['/my-learning']);
       },
       error: (error) => {
         console.error('Error during checkout:', error);
-        this.notificationService.showError('Purchase failed. Please try again.');
+        this.notificationService.showError(
+          'Purchase failed. Please try again.'
+        );
       },
       complete: () => {
         this.isCheckingOut.set(false);
-      }
+      },
     });
   }
 }

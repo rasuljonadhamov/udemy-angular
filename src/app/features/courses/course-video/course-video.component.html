@@ -22,11 +22,20 @@
 
     <div class="video-content">
       <div class="video-wrapper">
-        @if (course()!.videoUrl) {
+        @if (selectedLesson()?.videoUrl) {
         <iframe
-          [src]="course()!.videoUrl"
+          [src]="selectedLesson()!.videoUrl | safeUrl"
           frameborder="0"
           allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          class="video-iframe"
+        ></iframe>
+        } @else if (course()!.videoUrl) {
+        <iframe
+          [src]="course()!.videoUrl | safeUrl"
+          frameborder="0"
+          allowfullscreen
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           class="video-iframe"
         ></iframe>
         } @else {
@@ -44,6 +53,14 @@
             like Vimeo or YouTube
           </p>
         </div>
+        } @if (selectedLesson()) {
+        <div class="lesson-info">
+          <h3>{{ selectedLesson()!.title }}</h3>
+          <p class="lesson-duration">{{ selectedLesson()!.duration }}</p>
+          @if (selectedLesson()!.isPreview) {
+          <span class="preview-badge">Preview</span>
+          }
+        </div>
         }
       </div>
 
@@ -52,26 +69,52 @@
           <h2>Course Content</h2>
           @if (course()?.curriculum?.length) {
           <div class="curriculum">
-            @for (module of course()?.curriculum || []; track module.id || $index) {
+            @for (module of course()?.curriculum || []; track module.id ||
+            $index) {
             <div class="module">
               <h3>{{ module.title }}</h3>
               <ul class="lessons">
                 @for (lesson of module.lessons; track lesson.id || $index) {
-                <li class="lesson">
+                <li
+                  class="lesson"
+                  [class.preview]="lesson.isPreview"
+                  [class.locked]="!canAccessLesson(lesson)"
+                  [class.selected]="selectedLesson()?.title === lesson.title"
+                  (click)="selectLesson(lesson)"
+                >
                   <svg
                     width="16"
                     height="16"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
+                    @if (lesson.isPreview) {
                     <path
                       fill-rule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
                       clip-rule="evenodd"
                     />
+                    } @else if (!canAccessLesson(lesson)) {
+                    <path
+                      fill-rule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      clip-rule="evenodd"
+                    />
+                    } @else {
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+                      clip-rule="evenodd"
+                    />
+                    }
                   </svg>
                   <span>{{ lesson.title }}</span>
                   <span class="duration">{{ lesson.duration }}</span>
+                  @if (lesson.isPreview) {
+                  <span class="preview-indicator">Preview</span>
+                  } @else if (!canAccessLesson(lesson)) {
+                  <span class="lock-indicator">🔒</span>
+                  }
                 </li>
                 }
               </ul>
