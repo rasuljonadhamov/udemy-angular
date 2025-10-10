@@ -7,6 +7,7 @@ import { Course, Review } from '../../../core/models/course.model';
 import { AuthStore } from '../../../store/auth.store';
 import { FavoritesStore } from '../../../store/favorites.store';
 import { CartStore } from '../../../store/cart.store';
+import { ThemeStore } from '../../../store/theme.store';
 import { NotificationService } from '../../../core/services/notification.service';
 import { CustomValidators } from '../../../shared/validators/custom-validators';
 import { SafeUrlPipe } from '../../../shared/pipes/safe-url.pipe';
@@ -28,6 +29,7 @@ export class CourseDetailComponent implements OnInit {
   authStore = inject(AuthStore);
   favoritesStore = inject(FavoritesStore);
   cartStore = inject(CartStore);
+  themeStore = inject(ThemeStore);
 
   course = signal<Course | null>(null);
   reviews = signal<Review[]>([]);
@@ -216,6 +218,11 @@ export class CourseDetailComponent implements OnInit {
     return id
       ? this.authStore.user()?.purchasedCourses?.includes(id) || false
       : false;
+  }
+
+  isLessonAccessible(lesson: any): boolean {
+    if (lesson.isPreview) return true;
+    return this.isPurchased;
   }
 
   private getCourseId(): string {

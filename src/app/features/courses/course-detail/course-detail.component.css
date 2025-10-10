@@ -108,6 +108,146 @@
   color: #ddd;
 }
 
+.curriculum-section {
+  margin-bottom: 3rem;
+}
+
+.curriculum-section h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.module {
+  margin-bottom: 1.5rem;
+}
+
+.module h3 {
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.lessons {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lesson {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+  transition: all 0.2s ease;
+}
+
+.lesson:last-child {
+  border-bottom: none;
+}
+
+.lesson svg {
+  color: #667eea;
+  flex-shrink: 0;
+}
+
+.lesson.accessible svg {
+  color: #667eea;
+}
+
+.lesson.locked svg {
+  color: #999;
+}
+
+.lesson.locked {
+  opacity: 0.6;
+}
+
+.lesson span:first-of-type {
+  flex: 1;
+  font-weight: 500;
+}
+
+.duration {
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.preview-badge {
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.locked-badge {
+  background: #f5f5f5;
+  color: #666;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Dark Mode Support */
+.reviews-section.dark-mode {
+  background: #1a1a1a;
+  color: #e0e0e0;
+}
+
+.reviews-section.dark-mode h2 {
+  color: #e0e0e0;
+}
+
+.reviews-section.dark-mode .review-form {
+  background: #2d2d2d;
+  border: 1px solid #404040;
+}
+
+.reviews-section.dark-mode .review-form h3 {
+  color: #e0e0e0;
+}
+
+.reviews-section.dark-mode .review-form label {
+  color: #e0e0e0;
+}
+
+.reviews-section.dark-mode .review-form input,
+.reviews-section.dark-mode .review-form textarea {
+  background: #404040;
+  border: 1px solid #555;
+  color: #e0e0e0;
+}
+
+.reviews-section.dark-mode .review-form input:focus,
+.reviews-section.dark-mode .review-form textarea:focus {
+  border-color: #667eea;
+  outline: none;
+}
+
+.reviews-section.dark-mode .review-item {
+  border-bottom: 1px solid #404040;
+}
+
+.reviews-section.dark-mode .review-header h4 {
+  color: #e0e0e0;
+}
+
+.reviews-section.dark-mode .review-comment {
+  color: #b0b0b0;
+}
+
+.reviews-section.dark-mode .review-date {
+  color: #888;
+}
+
+.reviews-section.dark-mode .no-reviews {
+  color: #888;
+}
+
 @media (max-width: 768px) {
   .course-header {
     grid-template-columns: 1fr;
