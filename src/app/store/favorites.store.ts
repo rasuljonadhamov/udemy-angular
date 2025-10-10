@@ -39,7 +39,7 @@ export const FavoritesStore = signalStore(
           courseIds: updated,
           lastModified: Date.now(),
         });
-        storage.setItem('favorites', updated);
+        storage.setItem('favorites', updated, true);
       }
     },
 
@@ -49,7 +49,7 @@ export const FavoritesStore = signalStore(
         courseIds: updated,
         lastModified: Date.now(),
       });
-      storage.setItem('favorites', updated);
+      storage.setItem('favorites', updated, true);
     },
 
     toggleFavorite(courseId: string) {
@@ -67,7 +67,7 @@ export const FavoritesStore = signalStore(
         courseIds: updated,
         lastModified: Date.now(),
       });
-      storage.setItem('favorites', updated);
+      storage.setItem('favorites', updated, true);
     },
 
     clearAll() {
@@ -75,14 +75,21 @@ export const FavoritesStore = signalStore(
         courseIds: [],
         lastModified: Date.now(),
       });
-      storage.removeItem('favorites');
+      storage.removeItem('favorites', true);
     },
 
     loadFromStorage() {
-      const courseIds = storage.getItem<string[]>('favorites');
+      const courseIds = storage.getItem<string[]>('favorites', true);
       if (courseIds) {
         patchState(store, { courseIds });
       }
+    },
+
+    reloadUserData() {
+      console.log('reloadUserData');
+
+      patchState(store, { courseIds: [] });
+      this.loadFromStorage();
     },
 
     exportFavorites(): string[] {
@@ -94,7 +101,7 @@ export const FavoritesStore = signalStore(
         courseIds: [...new Set(courseIds)],
         lastModified: Date.now(),
       });
-      storage.setItem('favorites', courseIds);
+      storage.setItem('favorites', courseIds, true);
     },
 
     hasFavorites(): boolean {

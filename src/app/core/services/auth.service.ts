@@ -87,6 +87,12 @@ export class AuthService {
     );
   }
 
+  getCurrentUserFromServer(): Observable<{ user: User }> {
+    return this.http
+      .get<{ user: User }>(`${this.apiUrl}/me`)
+      .pipe(catchError(this.handleError));
+  }
+
   private setSession(authResult: AuthResponse): void {
     const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
     this.storage.setItem('token', authResult.token);

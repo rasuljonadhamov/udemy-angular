@@ -8,8 +8,10 @@ import {
 } from '@ngrx/signals';
 import { inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { User } from '../core/models/user.model';
 import { StorageService } from '../core/services/storage.service';
+import { environment } from '../environments/environment';
 
 interface AuthState {
   user: User | null;
@@ -52,12 +54,19 @@ export const AuthStore = signalStore(
     sessionDuration: computed(() => {
       const lastLogin = store.lastLoginTime();
       if (!lastLogin) return 0;
-      return Math.floor((Date.now() - lastLogin) / 1000 / 60); // minutes
+      return Math.floor((Date.now() - lastLogin) / 1000 / 60); // min
     }),
   })),
   withMethods(
-    (store, router = inject(Router), storage = inject(StorageService)) => ({
+    (
+      store,
+      router = inject(Router),
+      storage = inject(StorageService),
+      http = inject(HttpClient)
+    ) => ({
       login(user: User, token: string) {
+        storage.clearUserSpecificData();
+
         const loginTime = Date.now();
         patchState(store, {
           user,
@@ -73,6 +82,8 @@ export const AuthStore = signalStore(
       },
 
       logout() {
+        storage.clearUserSpecificData();
+
         patchState(store, {
           user: null,
           token: null,
@@ -129,7 +140,6 @@ export const AuthStore = signalStore(
           storage.setItem('user', updatedUser);
         }
       },
-      // hasPurchasedCourse
       hasPurchasedCourse(courseId: string): boolean {
         return store.user()?.purchasedCourses?.includes(courseId) || false;
       },
@@ -146,7 +156,30 @@ export const AuthStore = signalStore(
             isAuthenticated: true,
             lastLoginTime,
           });
+
+          this.loadUserSpecificData();
         }
+      },
+
+      loadUserSpecificData() {
+        console.log('loadUserSpecificData');
+      },
+
+      refreshUserData() {
+        const token = storage.getItem<string>('token');
+        if (!token) return;
+
+        const apiUrl = `${environment.apiUrl}/auth`;
+        http.get<{ user: User }>(`${apiUrl}/me`).subscribe({
+          next: (response) => {
+            const updatedUser = response.user;
+            patchState(store, { user: updatedUser });
+            storage.setItem('user', updatedUser);
+          },
+          error: (error) => {
+            console.error('Failed to refresh user data:', error);
+          },
+        });
       },
 
       clearError() {

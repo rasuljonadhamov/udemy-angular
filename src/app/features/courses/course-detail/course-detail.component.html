@@ -8,11 +8,25 @@
   <div class="course-hero">
     <div class="container">
       <div class="course-content">
-        @if (course()?.curriculum?.length) {
+        @if (course()?.videoUrl) {
+        <section class="preview-video-section">
+          <h2>Course Preview</h2>
+          <div class="video-wrapper">
+            <iframe
+              [src]="course()!.videoUrl | safeUrl"
+              frameborder="0"
+              allowfullscreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              class="preview-video"
+            ></iframe>
+          </div>
+        </section>
+        } @if (course()?.curriculum?.length) {
         <section class="curriculum-section">
           <h2>Course Curriculum</h2>
           <div class="curriculum">
-            @for (module of course()?.curriculum || []; track module.id || $index) {
+            @for (module of course()?.curriculum || []; track module.id ||
+            $index) {
             <div class="module">
               <h3>{{ module.title }}</h3>
               <ul class="lessons">
@@ -58,7 +72,9 @@
                   <button
                     type="button"
                     class="star-btn"
-                    [class.active]="(reviewForm.get('rating')?.value || 0) >= star"
+                    [class.active]="
+                      (reviewForm.get('rating')?.value || 0) >= star
+                    "
                     (click)="reviewForm.patchValue({ rating: star })"
                   >
                     <svg
